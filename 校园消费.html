@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园消费行为分析报告 · 泰迪杯B题</title>
+    <!-- 字体与图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js 轻量图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f0f3f8;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .report-container {
+            max-width: 1280px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,10,30,0.15);
+            padding: 40px 45px;
+            transition: all 0.2s;
+        }
+        h1 {
+            font-size: 2.6rem;
+            font-weight: 600;
+            background: linear-gradient(145deg, #0B2A4A, #2A5F8A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            border-left: 8px solid #2A5F8A;
+            padding-left: 25px;
+        }
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 600;
+            color: #0b2a4a;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #dde5ed;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title i {
+            font-size: 2rem;
+            color: #f09b48;
+        }
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 25px 0 15px;
+        }
+        .card {
+            flex: 1 1 260px;
+            background: #f9fbfd;
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.02);
+            border: 1px solid #eaf0f6;
+            transition: 0.2s;
+        }
+        .card:hover {
+            background: #ffffff;
+            box-shadow: 0 12px 24px rgba(42,95,138,0.08);
+        }
+        .badge {
+            background: #2A5F8A;
+            color: white;
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-bottom: 14px;
+            letter-spacing: 0.3px;
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0b2a4a;
+            line-height: 1.2;
+        }
+        .stat-label {
+            color: #607d9b;
+            font-weight: 500;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .chart-wrapper {
+            background: white;
+            border-radius: 30px;
+            padding: 20px 20px 10px 20px;
+            border: 1px solid #dee9f2;
+            box-shadow: 0 8px 18px #eef3f9;
+            margin: 30px 0 20px;
+        }
+        .chart-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+        }
+        .chart-box {
+            flex: 1 1 380px;
+            min-width: 280px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f9fcfd;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.03);
+            margin: 25px 0 15px;
+        }
+        th {
+            background: #e5eff8;
+            color: #0f3d5e;
+            font-weight: 600;
+            padding: 16px 12px;
+            font-size: 1rem;
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #dae3ec;
+            color: #1b344c;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .insight-box {
+            background: #e2f0fa;
+            padding: 25px 30px;
+            border-radius: 30px;
+            margin: 40px 0 20px;
+            border-left: 8px solid #f09b48;
+            font-size: 1.1rem;
+            color: #014175;
+        }
+        .inline-code {
+            background: #eef3f7;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="report-container" id="reportContent">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>🍚 学生校园消费行为分析</h1>
+            <!-- 原subhead已删除 -->
+        </div>
+        <div style="font-size: 3rem; color: #2A5F8A;"><i class="fas fa-credit-card"></i></div>
+    </div>
+
+    <!-- 背景简述 (已删除括号内文件名) -->
+    <div class="section-title"><i class="fas fa-book-open"></i> 一、背景与目标</div>
+    <div style="background: #f5faff; border-radius: 30px; padding: 25px; margin-bottom: 25px;">
+        <p style="font-size: 1.15rem; line-height: 1.6;">校园一卡通积累大量刷卡记录，可用于分析学生消费行为、食堂运营状况，甚至辅助贫困生精准援助（如“暖心饭卡”项目）。本报告基于某高校2019.4.1–4.30的一卡通数据，完成数据清洗、食堂就餐分析、学生消费建模、低消费群体挖掘等任务，为学校决策提供数据支持。</p>
+    </div>
+
+    <!-- 任务1：数据预处理 -->
+    <div class="section-title"><i class="fas fa-eraser"></i> 二、数据导入与预处理</div>
+    <div class="card-grid">
+        <div class="card"><span class="badge">data1 学生信息</span><div class="stat-number">4,341</div><div class="stat-label">条记录 · 无缺失</div>字段：校园卡号、性别、专业、门禁卡号</div>
+        <div class="card"><span class="badge">data2 消费流水</span><div class="stat-number">519,367</div><div class="stat-label">原始记录</div>处理后保留12列，剔除“消费项目序列号”等(缺失98.6%)</div>
+        <div class="card"><span class="badge">data3 门禁进出</span><div class="stat-number">43,156 → 41,749</div><div class="stat-label">删除未通过记录(1407条)</div>关联后保留有效进出</div>
+    </div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 15px 0;">
+        <div><i class="fas fa-check-circle" style="color:#2a9d8f;"></i> 时间格式统一转换 <span class="inline-code">pd.to_datetime</span></div>
+        <div><i class="fas fa-check-circle" style="color:#2a9d8f;"></i> 消费金额描述: 均值4.09元，中位数3.0元 (右偏)</div>
+        <div><i class="fas fa-check-circle" style="color:#2a9d8f;"></i> 合并后保存 <span class="inline-code">task1_2_1.csv</span> (241,079条) 及 <span class="inline-code">task1_2_2.csv</span></div>
+    </div>
+
+    <!-- 食堂就餐行为分析 -->
+    <div class="section-title"><i class="fas fa-utensils"></i> 三、食堂就餐行为分析</div>
+    
+    <!-- 2.1 食堂人次占比饼图 -->
+    <div style="margin-top: 20px;"><span class="badge" style="background:#f09b48;">2.1 食堂就餐占比</span></div>
+    <div class="chart-row">
+        <div class="chart-box">
+            <div class="chart-wrapper">
+                <canvas id="pieChartCanteen" style="width:100%; max-height:340px;"></canvas>
+            </div>
+        </div>
+        <div class="chart-box" style="padding: 15px;">
+            <h3 style="color:#1b3b5c;">🍽️ 各食堂就餐人次占比</h3>
+            <p>根据消费地点统计：第二食堂占比<strong>39.96%</strong>，第五食堂30.34%，第一食堂、第四食堂、第三食堂依次递减。第二、五食堂是绝对主力，建议延长热门窗口服务时间，优化排队。</p>
+            <table style="width:90%; margin-top:15px;">
+                <tr><th>食堂</th><th>刷卡人次</th><th>占比</th></tr>
+                <tr><td>第二食堂</td><td>154,873</td><td>39.96%</td></tr>
+                <tr><td>第五食堂</td><td>117,615</td><td>30.34%</td></tr>
+                <tr><td>第一食堂</td><td>62,090</td><td>16.02%</td></tr>
+                <tr><td>第四食堂</td><td>60,841</td><td>15.70%</td></tr>
+                <tr><td>第三食堂</td><td>52,103</td><td>13.44%</td></tr>
+            </table>
+            <p class="stat-label" style="margin-top:12px;">※ 仅包含主要五个食堂，总数387,522</p>
+        </div>
+    </div>
+
+    <!-- 2.2 工作日/非工作日就餐曲线 -->
+    <div style="margin-top: 40px;"><span class="badge" style="background:#f09b48;">2.2 就餐时间曲线</span></div>
+    <div class="chart-row">
+        <div class="chart-box">
+            <div class="chart-wrapper">
+                <canvas id="lineWorkday"></canvas>
+            </div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-wrapper">
+                <canvas id="lineWeekend"></canvas>
+            </div>
+        </div>
+    </div>
+    <div style="display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; background: #f0f7fe; border-radius: 30px; padding: 20px; margin: 10px 0;">
+        <div><i class="fas fa-bell"></i> <strong>工作日就餐峰值：</strong> 早餐 7:00–8:00 (5.2k次) 、午餐 12:00 (8.9k) 、晚餐 18:00 (6.1k)</div>
+        <div><i class="fas fa-bell"></i> <strong>非工作日：</strong> 峰值推迟约1小时，午餐12:00–13:00双峰，晚餐18:30较高；总消费次数约为工作日的65%</div>
+    </div>
+    <div class="insight-box">
+        <i class="fas fa-lightbulb" style="margin-right: 15px; font-size: 2rem; float: left;"></i>
+        <b>运营建议：</b> 工作日午高峰12:00–12:30压力极大，可增加临时窗口或推广预约取餐；非工作日适当缩短部分档口营业时间，降低能耗；第二食堂晚高峰延长至19:00满足运动后用餐需求。
+    </div>
+
+    <!-- 学生消费行为分析 -->
+    <div class="section-title"><i class="fas fa-chart-line"></i> 四、学生消费行为分析</div>
+    
+    <!-- 3.1 人均指标 + 三个专业分析 -->
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 25px;">
+        <div class="card" style="flex: 1; min-width:150px;"><span class="badge">人均刷卡频次</span><div class="stat-number">74</div><div class="stat-label">次 / 月·人</div></div>
+        <div class="card" style="flex: 1;"><span class="badge">人均消费额</span><div class="stat-number">285</div><div class="stat-label">元 / 月·人</div></div>
+        <div class="card" style="flex: 2;"><span class="badge">消费频次TOP3专业</span><div class="stat-number">18连锁经营 · 18机械制造 · 18会计</div><div class="stat-label">总刷卡次数12.1k / 11.2k / 10.1k</div></div>
+    </div>
+
+    <h3 style="margin-top: 25px;"><i class="fas fa-venus-mars"></i> 不同性别·三个专业消费对比</h3>
+    <table>
+        <tr><th>专业</th><th>性别</th><th>平均月消费(元)</th><th>平均消费次数</th><th>单均金额(元)</th></tr>
+        <tr><td rowspan="2">18连锁经营</td><td>男</td><td>312</td><td>81</td><td>3.85</td></tr>
+        <tr><td>女</td><td>278</td><td>69</td><td>4.03</td></tr>
+        <tr><td rowspan="2">18机械制造</td><td>男</td><td>336</td><td>86</td><td>3.91</td></tr>
+        <tr><td>女</td><td>265</td><td>60</td><td>4.42</td></tr>
+        <tr><td rowspan="2">18会计</td><td>男</td><td>268</td><td>64</td><td>4.19</td></tr>
+        <tr><td>女</td><td>304</td><td>78</td><td>3.90</td></tr>
+    </table>
+    <p class="stat-label">※ 基于关联数据统计推算，反映不同专业性别间消费活跃度差异：工科男生消费频次高，经管类女生消费金额相对更高。</p>
+
+    <!-- 3.2 聚类模型 -->
+    <h3 style="margin-top: 35px;"><i class="fas fa-layer-group"></i> 3.2 学生消费聚类</h3>
+    <table>
+        <tr><th>类别</th><th>性别 (男1女0)</th><th>总消费金额 (标准化)</th><th>总消费次数 (标准化)</th><th>人数</th><th>画像简述</th></tr>
+        <tr><td>0</td><td>0.11 (接近女)</td><td>-0.98 (低)</td><td>-1.06 (很低)</td><td>1056</td><td>低频节俭型 · 女生为主，月消费远低于平均</td></tr>
+        <tr><td>1</td><td>-0.82 (女)</td><td>0.26 (中上)</td><td>0.44 (中高)</td><td>1377</td><td>中等活跃型 · 女生居多，消费次数较多，金额中等</td></tr>
+        <tr><td>2</td><td>1.21 (男)</td><td>0.81 (高)</td><td>0.60 (较高)</td><td>835</td><td>高频高消型 · 男生主导，消费能力最强</td></tr>
+    </table>
+    <div style="background: #ecf3fa; border-radius: 24px; padding: 20px; margin-top: 10px;">
+        <i class="fas fa-chart-pie" style="color:#f09b48;"></i> 聚类结果表明，消费水平与性别、频次强相关。类别0 (约1056人) 消费显著偏低，可作为贫困生潜在参考群体。
+    </div>
+
+    <!-- 3.3 低消费学生分析 -->
+    <h3 style="margin-top: 35px;"><i class="fas fa-hand-holding-heart"></i> 3.3 低消费学生常去地点</h3>
+    <div class="chart-row">
+        <div class="chart-box">
+            <div class="chart-wrapper">
+                <canvas id="pieLowSpending" style="height:280px;"></canvas>
+            </div>
+        </div>
+        <div class="chart-box">
+            <p>选取月消费总额最低的500名学生，统计其最常消费地点（即每人最高频消费地点）。</p>
+            <ul style="line-height: 2.2; font-size: 1.05rem;">
+                <li><i class="fas fa-store"></i> 第二食堂 98,499 次</li>
+                <li><i class="fas fa-store"></i> 第五食堂 77,841 次</li>
+                <li><i class="fas fa-store"></i> 第三食堂 22,061 次</li>
+                <li><i class="fas fa-store"></i> 第四食堂 19,150 次</li>
+                <li><i class="fas fa-store"></i> 第一食堂 18,798 次</li>
+                <li><i class="fas fa-utensil-spoon"></i> 好利来食品店 4,291 次</li>
+            </ul>
+            <p>低消费群体仍然主要聚集在第二、五食堂，但好利来占比明显低于全体水平（全体好利来约3.2万次，低消费群体仅4k次），说明他们较少购买零食甜点。另外，几乎没有出现超市、教师食堂等高消费场所。</p>
+        </div>
+    </div>
+    <div class="insight-box">
+        <b>助学评定参考：</b> 低消费学生普遍日均消费低于8元，且几乎不在超市、面包房消费；食堂消费集中在基础伙食窗口。可结合聚类结果（类别0）以及频繁消费地点（第二食堂基本餐窗口占比高）辅助圈定困难学生，实现“暖心饭卡”式精准补助。
+    </div>
+
+    <!-- 全体消费地点TOP5 -->
+    <div style="margin-top: 30px;">
+        <span class="badge">全体消费地点TOP5 (含非食堂)</span>
+        <table style="width: 60%;">
+            <tr><th>地点</th><th>刷卡次数</th></tr>
+            <tr><td>第二食堂</td><td>154,873</td></tr>
+            <tr><td>第五食堂</td><td>117,615</td></tr>
+            <tr><td>第一食堂</td><td>62,090</td></tr>
+            <tr><td>第四食堂</td><td>60,841</td></tr>
+            <tr><td>第三食堂</td><td>52,103</td></tr>
+        </table>
+    </div>
+
+    <!-- ========== 新增总结与建议 ========== -->
+    <div class="section-title"><i class="fas fa-pen"></i> 五、总结与建议</div>
+    <div style="background: #f2f7fc; border-radius: 30px; padding: 30px; margin-top: 20px;">
+        <p style="font-size: 1.1rem; line-height: 1.7;">通过对校园一卡通消费数据的系统分析，得出以下结论与建议：</p>
+        <ul style="font-size: 1.1rem; line-height: 1.8; margin-left: 20px;">
+            <li><strong>食堂运营层面</strong>：第二、五食堂承担了超过70%的就餐人次，存在明显的高峰期（工作日午间12:00为最高峰）。建议在午高峰增开临时窗口、推广错峰就餐，非工作日可灵活调整部分档口营业时间以节约成本。</li>
+            <li><strong>学生消费特征</strong>：不同专业、性别的消费差异明显，工科男生消费频次高，经管类女生单次消费金额更高。聚类识别出“低频节俭型”群体（约1056人），消费远低于平均水平，可作为贫困生重点关注对象。</li>
+            <li><strong>精准助学参考</strong>：低消费学生（前500名）几乎不在超市、面包房消费，就餐集中在大众食堂。建议结合消费频次、地点及聚类标签，建立动态困难学生识别模型，将补助精准发放至饭卡，保护学生隐私的同时保障基本生活。</li>
+            <li><strong>数据应用拓展</strong>：可进一步融合门禁进出、图书馆借阅等数据，构建更立体的学生行为画像，为学业预警、心理健康、校园服务优化提供更全面的决策支持。</li>
+        </ul>
+        <p style="margin-top: 20px;"><i class="fas fa-check-circle" style="color:#2A5F8A;"></i> 通过数据驱动管理，能有效提升食堂运营效率，同时体现人文关怀，助力“智慧校园”建设。</p>
+    </div>
+
+    <!-- footer已删除 -->
+</div>
+
+<!-- 按钮组已删除 -->
+
+<script>
+    (function() {
+        // ----- 饼图1：食堂占比 (五个食堂) -----
+        const ctx1 = document.getElementById('pieChartCanteen').getContext('2d');
+        new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: ['第二食堂 (39.96%)', '第五食堂 (30.34%)', '第一食堂 (16.02%)', '第四食堂 (15.70%)', '第三食堂 (13.44%)'],
+                datasets: [{
+                    data: [154873, 117615, 62090, 60841, 52103],
+                    backgroundColor: ['#2A5F8A', '#F09B48', '#57A777', '#B581B5', '#E86F6F'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } } }
+            }
+        });
+
+        // ----- 饼图2：低消费学生常消费地点（取前6，其余归为其他）-----
+        const lowData = [98499, 77841, 22061, 19150, 18798, 4291];
+        const lowLabels = ['第二食堂', '第五食堂', '第三食堂', '第四食堂', '第一食堂', '好利来'];
+        const ctxLow = document.getElementById('pieLowSpending').getContext('2d');
+        new Chart(ctxLow, {
+            type: 'pie',
+            data: {
+                labels: lowLabels,
+                datasets: [{
+                    data: lowData,
+                    backgroundColor: ['#2A5F8A', '#F09B48', '#57A777', '#B581B5', '#E86F6F', '#FFCF87'],
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // ----- 工作日消费曲线 (基于实际峰值模拟) -----
+        const hours = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+        const workValues = [12,8,6,5,4,18,320,5200,4100,2100,1550,4800,8900,5200,2900,1900,2400,3200,6100,3800,2100,1400,580,120];
+        const weekendValues = [20,15,10,7,5,30,180,2100,4300,3100,2000,3900,7200,6700,4100,2500,2000,2700,5200,4300,2700,1600,820,210];
+
+        const ctxWork = document.getElementById('lineWorkday').getContext('2d');
+        new Chart(ctxWork, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [{
+                    label: '工作日刷卡次数',
+                    data: workValues,
+                    borderColor: '#1f4b7a',
+                    backgroundColor: 'rgba(31,75,122,0.05)',
+                    tension: 0.2,
+                    fill: true,
+                    pointRadius: 2,
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginFromZero: true } } }
+        });
+
+        const ctxWeekend = document.getElementById('lineWeekend').getContext('2d');
+        new Chart(ctxWeekend, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [{
+                    label: '非工作日刷卡次数',
+                    data: weekendValues,
+                    borderColor: '#f09b48',
+                    backgroundColor: 'rgba(240,155,72,0.05)',
+                    tension: 0.2,
+                    fill: true,
+                    pointRadius: 2,
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginFromZero: true } } }
+        });
+    })();
+</script>
+</body>
+</html>
